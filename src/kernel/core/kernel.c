@@ -17,11 +17,12 @@ void _start(void) {
 
     screenInit  ();   //initialize screen's framebuffer 
     bg          (0x182673);   //set a default blue background
-    //bg        (0xf4c430);   saffron yellow 
+    //bg        (0xf4c430);   saffron yellow
+    print       ("WELCOME TO UDMOS - Untethered Data Manager Operating System%n"); 
     print       ("screen initialized%n");
     dimension   (framebuffer_dimensions);
    
-    print("resolution:      %dx%d %n",framebuffer_dimensions[2],framebuffer_dimensions[1]);
+    print       ("resolution:      %dx%d %n",framebuffer_dimensions[2],framebuffer_dimensions[1]);
 
     gdt_init    ();//initialize the global descriptor table
     print       ("GDT initialized%n");
