@@ -1,46 +1,50 @@
 
+#======================================================================================================================================================#
 #INCLUDED ABSTRACTION
 all:clear clone_directories limine_download limine_header compile_kernel limine_build
-
+#======================================================================================================================================================#
 #SECURE RULES
-.PHONY:				\
+.PHONY:					\
 compile_kernel			\
-run				\
-debug				\
-runusb				\
-push				\
-clear				\
-write				\
+run						\
+debug					\
+runusb					\
+push					\
+clear					\
+write					\
 limine_build			\
 limine_download			\
 limine_header			\
 
+
+
+#======================================================================================================================================================#
 #GENERAL SPECIFICATIONS
 
-IMAGE_NAME				:=  garland.iso
+IMAGE_NAME					:=	 garland.iso
 USB_MOUNT_POINT				:= 	/dev/sda
 BUILD_DIRECTORY				:= 	./Build
-CROSS_COMPILER_DESTINATIONf		:=	./cross-compiler
+CROSS_COMPILER_DESTINATION	:=	./cross-compiler
 
-
+#======================================================================================================================================================#
 #KERNEL SPECIFICATIONS
 
 KERNEL_NAME 				:= 	garland.elf
 
-
 ifneq ($(wildcard ./cross-compiler/compiler/bin/x86_64-elf-gcc),)
-KERNEL_COMPILER				 := ./cross-compiler/compiler/bin/x86_64-elf-gcc
+KERNEL_COMPILER				:= ./cross-compiler/compiler/bin/x86_64-elf-gcc
 else
-KERNEL_COMPILER				 := cc
+KERNEL_COMPILER 			:= cc
 endif
+
 KERNEL_LINKER				:= 	ld
-KERNEL_ASSEMBLER				:= 	nasm
+KERNEL_ASSEMBLER			:= 	nasm
 
 # All the flags for linker and compiler
-KERNEL_C_FLAGS			:= 													\
+KERNEL_C_FLAGS				:= 												\
 							-Wall 											\
 							-Wextra											\
-							-Wno-unused-parameter 							\
+							-Wno-unused-paramete							\
 							-std=gnu11										\
 							-ffreestanding									\
 							-fno-stack-protector							\
@@ -58,12 +62,12 @@ KERNEL_C_FLAGS			:= 													\
 							-mno-sse										\
 							-mno-red-zone 									\
 							-mcmodel=kernel									\
-							-I src/kernel/common/ 							\
-							-I src/kernel/sys_lib/ 							\
+							-I src/kernel/common/							\
+							-I src/kernel/sys_lib							\
 							-I $(BUILD_DIRECTORY)/limine_header				\
 
 
-KERNEL_ASSEMBLER_FLAGS 	:= 													\
+KERNEL_ASSEMBLER_FLAGS 		:= 												\
 							-F dwarf 										\
 							-g												\
 							-f elf64 						
@@ -71,7 +75,7 @@ KERNEL_ASSEMBLER_FLAGS 	:= 													\
 KERNEL_LINKER_FLAGS 		:= 												\
 							-nostdlib										\
 							-static 										\
-							-m elf_x86_64 									\
+							-m elf_x86_64									\
 							-z 												\
 							max-page-size=0x1000 							\
 							-no-pie											\
@@ -80,9 +84,10 @@ KERNEL_LINKER_FLAGS 		:= 												\
 
 #======================================================================================================================================================#
 #RUN TOOLS
-QEMU					:= 	qemu-system-x86_64
+QEMU						:= 	qemu-system-x86_64
 
-QEMU_FLAGS				:= 	-d int,guest_errors,cpu_reset 					\
+QEMU_FLAGS					:=												\
+							-d int,guest_errors,cpu_reset 					\
 							-no-reboot 										\
 							-no-shutdown 									\
 							-device 										\
@@ -94,10 +99,10 @@ QEMU_FLAGS				:= 	-d int,guest_errors,cpu_reset 					\
 #,-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-fpu				
 #add to -cpu to test without certain features				
 				
-QEMU_DEBUG_FLAG			:=	-s -S				
-				
-QEMU_LOCAL_SOURCE		:=	-hda $(BUILD_DIRECTORY)/$(IMAGE_NAME)				
-QEMU_USB_SOURCE			:= 	-usb -device usb-host				
+QEMU_DEBUG_FLAG				:=	-s -S				
+					
+QEMU_LOCAL_SOURCE			:=	-hda $(BUILD_DIRECTORY)/$(IMAGE_NAME)				
+QEMU_USB_SOURCE				:= 	-usb -device usb-host				
 				
 run:				
 	$(QEMU) 																\
@@ -117,11 +122,11 @@ runusb:
 #======================================================================================================================================================#
 #GIT HUB UPLOAD
 push:clear
-	cd ..																   ;\
-	git add . 															   ;\
-	read -p "commit text : " COMMIT 										\
-	&& echo "commit : $${COMMIT}"										   ;\
-	git commit -a -m "$$COMMIT"											   ;\
+	cd ..																       ;\
+	git add . 															       ;\
+	read -p "commit text : " COMMIT 											\
+	&& echo "commit : $${COMMIT}"										       ;\
+	git commit -a -m "$$COMMIT"											       ;\
 	git push -f
 #======================================================================================================================================================#
 #CLEANING TOOLS
@@ -138,7 +143,7 @@ write:
 #======================================================================================================================================================#
 #LIMINE SETUP
 
-LIMINE_CONFIGURATION_FILE 	:= ./src/kernel/limine_configuration/limine.cfg
+LIMINE_CONFIGURATION_FILE 		:= ./src/kernel/limine_configuration/limine.cfg
 LIMINE_DIRECTORY			:= ./limine
 
 limine_build:
@@ -153,17 +158,17 @@ limine_build:
 	$(LIMINE_DIRECTORY)/limine-cd-efi.bin 	\
 	$(BUILD_DIRECTORY)/IsoRoot			
 
-	@xorriso													\
-		-as mkisofs 										\
-		-b limine-cd.bin 									\
-        -no-emul-boot 										\
-		-boot-load-size 4 									\
-		-boot-info-table 									\
-        --efi-boot limine-cd-efi.bin 						\
-        -efi-boot-part 										\
-		--efi-boot-image 									\
-		--protective-msdos-label 							\
-        $(BUILD_DIRECTORY)/IsoRoot 							\
+	@xorriso								\
+		-as mkisofs 						\
+		-b limine-cd.bin					\
+        -no-emul-boot 						\
+		-boot-load-size 					\
+		-boot-info-table					\
+        --efi-boot limine-cd-efi.bin 		\
+        -efi-boot-part 						\
+		--efi-boot-image 					\
+		--protective-msdos-label 			\
+        $(BUILD_DIRECTORY)/IsoRoot 			\
 		-o $(BUILD_DIRECTORY)/$(IMAGE_NAME)
 
 	@$(LIMINE_DIRECTORY)/limine-deploy $(BUILD_DIRECTORY)/$(IMAGE_NAME)
