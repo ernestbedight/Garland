@@ -55,7 +55,7 @@ void draw(uint64_t tot, uint32_t color)
 }
 
 
-void drawRectangle(uint64_t x, uint64_t y, uint32_t width, uint32_t height, uint32_t color)
+void draw_rectangle(uint64_t x, uint64_t y, uint32_t width, uint32_t height, uint32_t color)
 {
     for (uint64_t i = 0; i < width; i++)
     {
@@ -66,7 +66,7 @@ void drawRectangle(uint64_t x, uint64_t y, uint32_t width, uint32_t height, uint
     }
 }
 
-void draw_line( int x1, int y1, int x2, int y2)
+void draw_line( int x1, int y1, int x2, int y2, uint32_t colour)
 {
     int dx      = x2-x1;
     int dy      = y2-y1;
@@ -88,7 +88,7 @@ void draw_line( int x1, int y1, int x2, int y2)
                 py += sdy;
             }
             px += sdx;
-            draw_coord(px, py, 0xFFFFFF);
+            draw_coord(px, py, colour);
         }
     }
     else {
@@ -101,7 +101,7 @@ void draw_line( int x1, int y1, int x2, int y2)
                 px+=sdx;
             }
             py+=sdy;
-            draw_coord(px, py, 0xFFFFFF);
+            draw_coord(px, py, colour);
         }
     }
 }

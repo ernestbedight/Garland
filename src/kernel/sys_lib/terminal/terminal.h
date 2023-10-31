@@ -7,7 +7,7 @@
 #include <stdarg.h>
 #include <string_func.h>
 
-void    change_color    (uint32_t colour);
+void    change_color        (uint32_t colour);
 
 void    putchar             (unsigned char c, uint64_t x, uint64_t y);
 void    print               (char * text,...);

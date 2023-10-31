@@ -2,7 +2,7 @@
 
 static  int16_t   x_counter = 4;
 static  uint16_t  y_counter = 4;
-static  uint32_t  color     = 0xFFFFFF;
+static  uint32_t  color     = TERMINAL_FOREGROUND_COLOUR;
         va_list * va_stubb;
 
 void  putchar (unsigned char c, uint64_t x, uint64_t y)

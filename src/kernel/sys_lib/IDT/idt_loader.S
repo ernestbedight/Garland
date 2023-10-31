@@ -1,39 +1,39 @@
+.include "common_assembly.S"
 
-extern exception_handler
-
-global isr_stub_table
+.section .text
+.extern print
+.extern exception_handler
 
 isr_handler:
     cld
     pushall
 
-    pop rdi
+    pop %rdi
     call exception_handler
-    mov rsp, rax
+    mov %rsp, %rax
     
     popall
-    add rsp, 16
+    addq $16, %rsp
     iretq
 
 
-%macro isr_err_stub 1
-isr_stub_%+%1:
-    push %1
-    mov rdi, %1
+.macro isr_err_stub num
+isr_stub_\num:
+    push $\num
+    mov  $\num, %rdi
     jmp isr_handler
     iretq
-%endmacro
-; if writing for 64-bit, use iretq instead
-%macro isr_no_err_stub 1
-isr_stub_%+%1:
-    push 0
-    push %1
-    mov rdi, %1
-    jmp isr_handler
-    iretq
-%endmacro
+.endm
 
-extern exception_handler
+.macro isr_no_err_stub num
+isr_stub_\num:
+    push $0
+    push $\num
+    mov  $\num, %rdi
+    jmp  isr_handler
+    iretq
+.endm
+
 isr_no_err_stub 0
 isr_no_err_stub 1
 isr_no_err_stub 2
@@ -67,9 +67,10 @@ isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
 
+
+.global isr_stub_table
+
 isr_stub_table:
-%assign i 0 
-%rep    32 
-    dq isr_stub_%+i
-%assign i i+1 
-%endrep
+.irp param,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
+    .quad isr_stub_\param
+.endr

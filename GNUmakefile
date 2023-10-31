@@ -35,13 +35,19 @@ KERNEL_NAME                     :=     udmos.elf
 ifneq ($(wildcard ./cross-compiler/compiler/bin/x86_64-elf-gcc),)
 KERNEL_COMPILER                 :=     ./cross-compiler/compiler/bin/x86_64-elf-gcc
 else
-KERNEL_COMPILER                 :=     cc
+KERNEL_COMPILER                 :=     gcc
 endif
 
 KERNEL_LINKER                   :=     ld
-KERNEL_ASSEMBLER                :=     nasm
+KERNEL_ASSEMBLER                :=     gcc
 
 # All the flags for linker and compiler
+
+INCLUDE_DIRECTORIES       :=                                                 \
+                            -I src/kernel/common/                            \
+                            -I src/kernel/sys_lib/                           \
+                            -I $(BUILD_DIRECTORY)/limine_header              
+
 KERNEL_C_FLAGS            :=                                                 \
                             -Wall                                            \
                             -Wextra                                          \
@@ -63,16 +69,13 @@ KERNEL_C_FLAGS            :=                                                 \
                             -mno-sse                                         \
                             -mno-red-zone                                    \
                             -mcmodel=kernel                                  \
-                            -I src/kernel/common/                            \
-                            -I src/kernel/sys_lib/                           \
-                            -I $(BUILD_DIRECTORY)/limine_header              \
+                            $(INCLUDE_DIRECTORIES)        
 
 
 KERNEL_ASSEMBLER_FLAGS      :=                                               \
-                            -F dwarf                                         \
-                            -g                                               \
-                            -f elf64                         
-
+                            $(KERNEL_C_FLAGS)                                \
+                            -no-pie                                          
+                            
 KERNEL_LINKER_FLAGS         :=                                               \
                             -nostdlib                                        \
                             -static                                          \

@@ -2,10 +2,11 @@
 build_cross_compiler_stubb:binutils gcc  
 
 #DEFINE VARIABLES
-PREFIX                    :=    $(shell pwd)/compiler
-TARGET                    :=    x86_64-elf
+CROSS_COMPILER_DESTINATION  :=    ./cross-compiler
+PREFIX                      :=    $(shell pwd)/compiler
+TARGET                      :=    x86_64-elf
 
-CONFIGURE_DEFAULT_FLAG     := --target=$(TARGET) --prefix="$(PREFIX)"
+CONFIGURE_DEFAULT_FLAG      := --target=$(TARGET) --prefix="$(PREFIX)"
 
 
 #gdb-binutiils INSTALL
@@ -13,10 +14,10 @@ CONFIGURE_DEFAULT_FLAG     := --target=$(TARGET) --prefix="$(PREFIX)"
 .PHONY: binutils 
 
 binutils:
+	cd $(CROSS_COMPILER_DESTINATION)                                                                                                     ;\
 	clear                                                                                                                                ;\
 	echo -e "\n=>\e[0;31mCURRENT DIRECTORY \e[0m in:"                                                                                    ;\
 	pwd                                                                                                                                  ;\
-	echo -n "do you want to build and install binutils and gdb? [Y/n] " && read ans && [ $${ans:-Y} != Y ] && echo "Aborted" && exit 1   ;\
 	echo -e "\n=>\e[0;31mCLONING BINUTILS-GDB \e[0m in:"                                                                                 ;\
 	pwd                                                                                                                                  ;\
 	sudo rm -rf ./binutils                                                                                                               ;\
@@ -40,7 +41,6 @@ binutils:
 gcc:
 	clear                                                                                                                                ;\
 	echo PREFIX:$(PREFIX)                                                                                                                ;\
-	echo -n "do you want to build and install gcc? [Y/n] " && read ans && [ $${ans:-Y} != Y ] && echo "Aborted" && exit 1                ;\
 	echo -e "\n=>\e[0;31mCLONING GCC \e[0m in:"                                                                                          ;\
 	pwd                                                                                                                                  ;\
 	echo -e "\n"                                                                                                                         ;\
@@ -54,8 +54,10 @@ gcc:
 	echo -e "\n=>\e[0;31mBUILDING GCC \e[0m in:"                                                                                         ;\
 	pwd                                                                                                                                  ;\
 	echo -e "\n"                                                                                                                         ;\
-	sudo make all-gcc                                                                                                                    ;\
-	sudo make all-target-libgcc                                                                                                          ;\
-	sudo make install-gcc                                                                                                                ;
+	sudo -E make all-gcc                                                                                                                    ;\
+	sudo -E make all-target-libgcc                                                                                                          ;\
+	sudo -E make install-gcc                                                                                                                ;\
+    echo checkpoint                                                                                                                      ;\
+    sudo -E make install-target-libgcc
 
 

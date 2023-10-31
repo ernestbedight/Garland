@@ -3,6 +3,7 @@
 
 #include <common.h>
 #include <terminal/terminal.h>
+#include <framebuffer/framebuffer.h>
 NORETURN void exception_handler(uint8_t num);
 char * exception_messages[32] = 
 {
