@@ -149,6 +149,8 @@ write:
 LIMINE_CONFIGURATION_FILE     := ./src/kernel/limine_configuration/limine.cfg
 LIMINE_DIRECTORY              := ./limine
 
+limine: limine_download
+
 limine_build:
 	@echo -e "\n=>\e[0;31mBUILDING LIMINE...\e[0m"
 	@-mkdir -p $(BUILD_DIRECTORY)/IsoRoot
