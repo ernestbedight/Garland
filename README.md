@@ -7,13 +7,18 @@ make gcc git xorriso qemu
 ```bash
 make build_cross_compiler
 ```
+## Limine download
+To download Limine through the makefile type:
+```bash
+make limine
+```
 ## OS compilation
-Compile the OS in the Makefile directory with
+Compile the OS in the Makefile directory with:
 ```bash
 make
 ```
 ## USB booting
-after compiling it as normal you can write the iso file to a usb device (change mounting point in the makefile var based on your own device)
+after compiling it as normal you can write the iso file to a usb device (change mounting point in the makefile var based on your own device):
 ```
 make write
 ```
