@@ -1,5 +1,8 @@
+#This files setups the FPU (not usable in the main kernel)
+
 .include "common_assembly.S"
 #include <framebuffer/values/colours.h>
+
 /*
 value_37F  0x37F
 value_37E  0x37E
@@ -32,7 +35,6 @@ FPU_init:
     jz .noFPU      
 
     FLDCW [value_37A]   
-
 
     mov  $0, %rax
     ret

@@ -1,5 +1,6 @@
-#include <memory/memory.h>
+//This files contains memory operators
 
+#include <memory/memory.h>
 
 volatile struct limine_memmap_request memmap_req =
 {
@@ -76,6 +77,5 @@ int memcmp(const void *s1, const void *s2, uint64_t n)
     return 0;
 }
 
-//***********************************************************************
 
 

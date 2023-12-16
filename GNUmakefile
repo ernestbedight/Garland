@@ -2,7 +2,7 @@
 #Untethered Data Manager Operating System
 
 #INCLUDED ABSTRACTION
-all:clear clone_directories limine_download limine_header compile_kernel limine_build
+all:clear clone_directories limine_header compile_kernel limine_build
 
 #SECURE RULES
 .PHONY:                     \
@@ -106,7 +106,7 @@ QEMU_FLAGS                  :=                                               \
 QEMU_DEBUG_FLAG            :=    -s -S                
                 
 QEMU_LOCAL_SOURCE          :=    -hda $(BUILD_DIRECTORY)/$(IMAGE_NAME)                
-QEMU_USB_SOURCE            :=     -usb -device usb-host                
+QEMU_USB_SOURCE            :=    -hda $(USB_MOUNT_POINT)
                 
 run:                
 	$(QEMU)                                                                  \
@@ -126,7 +126,6 @@ runusb:
 
 #GIT HUB UPLOAD
 push:clear
-	cd ..                                                                   ;\
 	git add .                                                               ;\
 	read -p "commit text : " COMMIT                                          \
 	&& echo "commit : $${COMMIT}"                                           ;\
@@ -142,7 +141,7 @@ clear:
 
 #WRITING ONTO A MOUNTING POINT
 write:
-	dd if=$(BUILD_DIRECTORY)/$() of=$(USB_MOUNT_POINT) obs=1M oflag=direct status=none
+	dd if=$(BUILD_DIRECTORY)/$(IMAGE_NAME) of=$(USB_MOUNT_POINT) obs=1M oflag=direct status=none
 #it might brick your mouse if the usb devuce is not plugged, to fix close qemu windows through shortcuts
 
 #LIMINE SETUP
@@ -153,15 +152,14 @@ LIMINE_DIRECTORY              := ./limine
 limine_build:
 	@echo -e "\n=>\e[0;31mBUILDING LIMINE...\e[0m"
 	@-mkdir -p $(BUILD_DIRECTORY)/IsoRoot
-	@cp \
-	-v \
-	$(BUILD_DIRECTORY)/$(KERNEL_NAME)                        \
-	$(LIMINE_CONFIGURATION_FILE)                             \
-	$(LIMINE_DIRECTORY)/limine.sys                           \
-	$(LIMINE_DIRECTORY)/limine-cd.bin                        \
-	$(LIMINE_DIRECTORY)/limine-cd-efi.bin                    \
+	@cp                                                  \
+	$(BUILD_DIRECTORY)/$(KERNEL_NAME)                    \
+	$(LIMINE_CONFIGURATION_FILE)                         \
+	$(LIMINE_DIRECTORY)/limine.sys                       \
+	$(LIMINE_DIRECTORY)/limine-cd.bin                    \
+	$(LIMINE_DIRECTORY)/limine-cd-efi.bin                \
 	$(BUILD_DIRECTORY)/IsoRoot            	
-	@xorriso                                                 \
+	@xorriso                                             \
         -as mkisofs                                          \
         -b limine-cd.bin                                     \
         -no-emul-boot                                        \
@@ -206,5 +204,4 @@ clone_directories:
 	@echo -e "\n=>\e[0;31mCREATING DIRECTORIES...\e[0m"
 	@rsync -av -f"+ */" -f"- *" "./src" "$(BUILD_DIRECTORY)"
 	@mkdir -p $(BUILD_DIRECTORY)/limine_header
-
 

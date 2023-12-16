@@ -1,3 +1,5 @@
+//This files declares and loads the IDT
+
 #include <IDT/idt.h>
 
 

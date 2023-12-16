@@ -4,7 +4,10 @@
 #include <common.h>
 #include <terminal/terminal.h>
 #include <framebuffer/framebuffer.h>
-NORETURN void exception_handler(uint8_t num);
+NORETURN void exception_handler(uint8_t num, uint64_t address);
+
+//These are the error messages assigned to each interrupt
+
 char * exception_messages[32] = 
 {
     "division error",

@@ -2,7 +2,8 @@
 
 void hcf() {
     asm ("cli");
-    for (;;) {
+    for (;;)
+    {
         asm ("hlt");
     }
 }

@@ -10,8 +10,8 @@
 
 #define SCREEN_HEIGHT   1080
 #define SCREEN_WIDTH    1920
-#define MAX_VERTICAL_CHARS_1080p    119
-#define MAX_HORIZONTAL_CHARS_1080p  134
+#define MAX_VERTICAL_CHARS_1080p    67
+#define MAX_HORIZONTAL_CHARS_1080p  240
 #define CHAR_HEIGHT                 16
 #define CHAR_WIDTH                  8
 #define TEXT_BUFFER_SIZE            2073600
@@ -59,8 +59,6 @@ static void (*func_list[])(void) =
     EMPTY,EMPTY
 };
 
-static uint32_t text_buffer[TEXT_BUFFER_SIZE];
-static uint32_t text_framebuffer_buffer[TEXT_BUFFER_SIZE];
-
+static unsigned char text_buffer[TEXT_BUFFER_SIZE];
 
 #endif

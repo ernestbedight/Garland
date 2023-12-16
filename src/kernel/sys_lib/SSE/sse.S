@@ -1,3 +1,5 @@
+#This files setups the SSE (not usable in the main kernel)
+
 .section .text
 
 .extern pushall
@@ -13,23 +15,19 @@ error_message:
 .global SSE_init
 
 SSE_init:
-    mov $0x1, %eax
+    mov     $0x1, %eax
     cpuid
-    test $(1<<25), %rdx
-    jz .noSSE
-
-#PRINT_STUBB success_message ,0x00FF00, 0x000000
-
-    mov %cr0, %rax
-    and $0xFFFB, %ax		
-    or $0x2, %ax			
-    mov %rax, %cr0
-    mov %cr4, %rax
-    or $(3 << 9), %ax
-    mov %rax, %cr4 
-    mov $0, %rax
+    test    $(1<<25), %rdx
+    jz      .noSSE
+    mov     %cr0, %rax
+    and     $0xFFFB , %ax		
+    or      $0x2, %ax			
+    mov     %rax, %cr0
+    mov     %cr4, %rax
+    or      $(3 << 9), %ax
+    mov     %rax, %cr4 
+    mov     $0  , %rax
     ret
 .noSSE:
-#PRINT_STUBB error_message ,0xFF0000, 0x000000
-    mov $1, %rax
+    mov     $1, %rax
     ret

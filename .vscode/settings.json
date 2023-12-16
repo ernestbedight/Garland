@@ -1,0 +1,24 @@
+{
+    "files.associations": {
+        "framebuffer.h": "c",
+        "stdarg.h": "c",
+        "hash_map": "c",
+        "hash_set": "c",
+        "algorithm": "c",
+        "bitset": "c",
+        "format": "c",
+        "dynamic_bitset": "c",
+        "cstdint": "c",
+        "compare": "c",
+        "stdint.h": "c",
+        "limine.h": "c",
+        "memory.h": "c",
+        "ibm_8x16_font.h": "c",
+        "buffer": "c",
+        "string_functions.h": "c",
+        "*.tcc": "c",
+        "*.inc": "c",
+        "chrono": "c",
+        "global_include.h": "c"
+    }
+}

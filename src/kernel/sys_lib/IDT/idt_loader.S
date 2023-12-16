@@ -1,3 +1,5 @@
+#This file setups the IDT (interrupt descriptor table) in the first 31 interrupts
+
 .include "common_assembly.S"
 
 .section .text
@@ -5,10 +7,9 @@
 .extern exception_handler
 
 isr_handler:
-    cld
+    cli
     pushall
-
-    pop %rdi
+    
     call exception_handler
     mov %rsp, %rax
     
@@ -19,17 +20,16 @@ isr_handler:
 
 .macro isr_err_stub num
 isr_stub_\num:
-    push $\num
     mov  $\num, %rdi
+    pop %rsi
     jmp isr_handler
     iretq
 .endm
 
 .macro isr_no_err_stub num
 isr_stub_\num:
-    push $0
-    push $\num
     mov  $\num, %rdi
+    pop %rsi
     jmp  isr_handler
     iretq
 .endm

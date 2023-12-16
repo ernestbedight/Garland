@@ -1,3 +1,5 @@
+#This files setups the GDT (Global Descriptor Table), for now just in for kernel mode
+
 #include <framebuffer/values/colours.h>
 
 .extern print
