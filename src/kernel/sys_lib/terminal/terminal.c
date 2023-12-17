@@ -33,10 +33,12 @@ void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_s
     return;
 }
 
+/* SWAP BUFFER POINTER INSTEAD OF COPYING*/
+
 void copy_to_framebuffer(void)
 {
     bg(TERMINAL_BACKGROUND_COLOUR,framebuffer_base);
-    for(uint64_t scroller = 0; scroller <= TEXT_BUFFER_SIZE/2; scroller++)
+    for(uint64_t scroller = 0; scroller <= 1036800; scroller++)
     {
         ((uint64_t *)framebuffer_base)[scroller] = ((uint64_t *)text_framebuffer_buffer)[scroller];
     }
@@ -46,14 +48,13 @@ void copy_text_buffer(void)
 {
     bg(TERMINAL_BACKGROUND_COLOUR,text_framebuffer_buffer);
     uint64_t text_y_counter_opposite    = 0;
-    uint64_t text_buffer_pixel_selector = 0;
-    uint64_t offset_stubb               = (offset_switch)?offset:0;
+    uint64_t offset_stubb               = (offset_switch)?offset*SCREEN_WIDTH:0;
 
-    for(uint64_t text_y_counter = 0;text_y_counter <= SCREEN_HEIGHT-((offset_switch)?0:(8)); text_y_counter++)
+    for(uint64_t text_y_counter = 0;text_y_counter <= TEXT_BUFFER_SIZE-((offset_switch)?0:(15360)); text_y_counter+= SCREEN_WIDTH)
     {
         
-        text_buffer_pixel_selector = (offset_stubb + (text_y_counter - text_y_counter_opposite)) * SCREEN_WIDTH;
-        if(text_buffer_pixel_selector >= TEXT_BUFFER_SIZE-(8*SCREEN_WIDTH))
+        uint64_t text_buffer_pixel_selector = (offset_stubb + (text_y_counter - text_y_counter_opposite));
+        if(text_buffer_pixel_selector >= 2058240)
         {
             text_y_counter_opposite = text_y_counter;
             offset_stubb = 0;
@@ -61,10 +62,10 @@ void copy_text_buffer(void)
         }
         for(uint64_t text_x_counter = 0;text_x_counter <= SCREEN_WIDTH;text_x_counter++)
         {
-
-            if(text_buffer[text_buffer_pixel_selector + text_x_counter] != BLACK) 
+            uint32_t letter = text_buffer[text_buffer_pixel_selector + text_x_counter];
+            if(letter != BLACK) 
             {
-                text_framebuffer_buffer[text_x_counter + text_y_counter*SCREEN_WIDTH] = text_buffer[text_buffer_pixel_selector + text_x_counter];
+                text_framebuffer_buffer[text_x_counter + text_y_counter] =  letter;
             }
         }
     }

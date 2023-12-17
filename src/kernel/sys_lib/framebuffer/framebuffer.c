@@ -44,10 +44,11 @@ void dimension(uint64_t measures[3])
 
 void bg(uint32_t colour, uint32_t * buffer)
 {
+    uint64_t colour_64 = colour | ((uint64_t)colour << 32);
     //Changes the background colour to the designated one
-    for(uint64_t i =0; i < framebuffer->height * framebuffer ->width; i++)
+    for(uint64_t i =0; i < 1036800; i++)
     {
-                    buffer[i]   = colour;
+                    ((uint64_t * )buffer)[i]   = colour_64;
     }
 }
 
