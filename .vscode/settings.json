@@ -19,6 +19,7 @@
         "*.tcc": "c",
         "*.inc": "c",
         "chrono": "c",
-        "global_include.h": "c"
+        "global_include.h": "c",
+        "source_location": "c"
     }
 }

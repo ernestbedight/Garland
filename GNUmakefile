@@ -69,12 +69,14 @@ KERNEL_C_FLAGS            :=                                                 \
                             -mno-sse                                         \
                             -mno-red-zone                                    \
                             -mcmodel=kernel                                  \
-                            $(INCLUDE_DIRECTORIES)        
+                            $(INCLUDE_DIRECTORIES)                           \
+                            -g                                               
 
 
 KERNEL_ASSEMBLER_FLAGS      :=                                               \
                             $(KERNEL_C_FLAGS)                                \
-                            -no-pie                                          
+                            -no-pie                                          \
+                            -g                                               
                             
 KERNEL_LINKER_FLAGS         :=                                               \
                             -nostdlib                                        \
@@ -83,7 +85,7 @@ KERNEL_LINKER_FLAGS         :=                                               \
                             -z                                               \
                             max-page-size=0x1000                             \
                             -no-pie                                          \
-                            -T src/kernel/linker_scripts/linker.ld
+                            -T src/kernel/linker_scripts/linker.ld           \
 
 
 

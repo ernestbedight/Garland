@@ -12,8 +12,6 @@ void _start(void) {
 
     screenInit  ();   //initialize screen's framebuffer 
     bg          (TERMINAL_BACKGROUND_COLOUR,framebuffer_base);   //set a default blue background
-
-    //bg        (0xf4c430);   saffron yellow
     print       ("WELCOME TO UDMOS - Untethered Data Manager Operating System%n"); 
     dimension   (framebuffer_dimensions);
    
@@ -40,10 +38,10 @@ void _start(void) {
     uint64_t usable_memory_size_digits      = number_of_digits(usable_memory_size) - 2;
 
 
-    print("memory size:%x%sGiB%n",200,placepoint(memory_size, memory_size_digits));
-    print("usable memory:%x%sGiB%n",200,placepoint(usable_memory_size, usable_memory_size_digits));
-    for(int i = 0; i<700; i++){
-    print("A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f %cg%c h i j k l m n o p q r s t u v w x y z ",RED,TERMINAL_FOREGROUND_COLOUR);
+    print("memory size:%x%sGiB%n",20,placepoint(memory_size, memory_size_digits));
+    print("usable memory:%x%sGiB%n",20,placepoint(usable_memory_size, usable_memory_size_digits));
+    for(int i = 0; i<8000; i++){
+    print("%cABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",TERMINAL_FOREGROUND_COLOUR);
     }
     uint32_t a = 4/0;
     hcf();

@@ -26,10 +26,7 @@ void screenInit(void) {
     framebuffer_base = framebuffer->address;
     bytesPerPixel    = framebuffer->bpp / 32;
     pitch            = framebuffer->pitch / 4;
-    for(uint64_t point_selector = 0; point_selector <= TEXT_BUFFER_SIZE; point_selector++)
-    {
-        text_buffer[point_selector] = BLACK;
-    }
+
     
 }
 

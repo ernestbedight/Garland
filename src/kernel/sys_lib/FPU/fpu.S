@@ -23,9 +23,10 @@ FPU_error_message:
 .global FPU_init
 
 FPU_init:
+
     mov     $FPU_success_message, %rdi
     mov     $GREEN , %rsi
-    mov     $TERMINAL_FOREGROUND_COLOUR , %rdx
+    mov     $TERMINAL_FOREGROUND_COLOUR, %rdx
     call    print
 
     mov     $1, %eax

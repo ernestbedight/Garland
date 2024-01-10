@@ -9,11 +9,15 @@ static  uint32_t  color                 = TERMINAL_FOREGROUND_COLOUR;
 static  uint64_t  text_buffer_position  = 0;  
 static  uint64_t  offset                = 0;
 static  uint8_t   offset_switch         = 0;
-static  uint64_t  text_line             = 0;
-static  uint64_t  text_line_above       = 0;
+static  uint64_t  text_line_to_write    = 0;
+        uint32_t text_buffer[TEXT_BUFFER_SIZE];
+        uint32_t save_buffer [TEXT_BUFFER_SIZE];
+        letter mask_buffer[MAX_TOTAL_CHARS_1080p];
+        letter char_buffer[MAX_TOTAL_CHARS_1080p];
 
-#define CHECK_OFFSET            if(offset >= SCREEN_HEIGHT) offset = 0;
-#define CLEAR_LINE(line)              for(uint64_t y_black = 0; y_black <= 16; y_black++){for(uint64_t x_black = 0; x_black <= SCREEN_WIDTH; x_black++){text_buffer[line*SCREEN_WIDTH+x_black+y_black*SCREEN_WIDTH] = BLACK;}}    
+
+#define CHECK_OFFSET                           if(offset >= MAX_VERTICAL_CHARS_1080p) offset = 0;
+#define CLEAR_BUFFER_LINE(line, buffer)        for(uint64_t x_black = 0; x_black < MAX_HORIZONTAL_CHARS_1080p; x_black++){buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_num = NULL;buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_colour = color;}    
 
 void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_selector)
 {
@@ -27,51 +31,59 @@ void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_s
     {
         for(cx=0;   cx<CHAR_WIDTH;   cx++)
         {
-            if(glyph[cy]&mask[cx]){draw_coord(x+cx,y+cy,color,framebuffer_selector);}
+            if(glyph[cy]&mask[cx]){draw_coord(x+cx,y+cy,color,framebuffer_selector);continue;}else{
+                draw_coord(x+cx,y+cy,TERMINAL_BACKGROUND_COLOUR,framebuffer_selector);
+            }
         }
     }
     return;
 }
 
-/* SWAP BUFFER POINTER INSTEAD OF COPYING*/
+
 
 void copy_to_framebuffer(void)
 {
-    bg(TERMINAL_BACKGROUND_COLOUR,framebuffer_base);
-    for(uint64_t scroller = 0; scroller <= 1036800; scroller++)
+    for(uint64_t fb_flush_sl = 0; fb_flush_sl <= TEXT_BUFFER_SIZE; fb_flush_sl++)
     {
-        ((uint64_t *)framebuffer_base)[scroller] = ((uint64_t *)text_framebuffer_buffer)[scroller];
+        if(save_buffer[fb_flush_sl] != text_buffer[fb_flush_sl])
+        {
+            framebuffer_base[fb_flush_sl] = text_buffer[fb_flush_sl];
+            save_buffer[fb_flush_sl] = text_buffer[fb_flush_sl];
+        }
     }
 }
 
-void copy_text_buffer(void)
+void flush_text_buffer(void)
 {
-    bg(TERMINAL_BACKGROUND_COLOUR,text_framebuffer_buffer);
-    uint64_t text_y_counter_opposite    = 0;
-    uint64_t offset_stubb               = (offset_switch)?offset*SCREEN_WIDTH:0;
+    uint64_t vertical_printing_limit = MAX_VERTICAL_CHARS_1080p;
+    uint64_t offset_copy    = offset;
 
-    for(uint64_t text_y_counter = 0;text_y_counter <= TEXT_BUFFER_SIZE-((offset_switch)?0:(15360)); text_y_counter+= SCREEN_WIDTH)
+    for(uint64_t v_flush_sl = 0, v_buffer_flush_sl = 0; v_flush_sl < vertical_printing_limit; v_flush_sl++, v_buffer_flush_sl++)
     {
-        
-        uint64_t text_buffer_pixel_selector = (offset_stubb + (text_y_counter - text_y_counter_opposite));
-        if(text_buffer_pixel_selector >= 2058240)
-        {
-            text_y_counter_opposite = text_y_counter;
-            offset_stubb = 0;
-            text_buffer_pixel_selector = 0;
+        if(v_buffer_flush_sl + offset_copy == MAX_VERTICAL_CHARS_1080p){
+            v_buffer_flush_sl = 0;
+            offset_copy = 0;
         }
-        for(uint64_t text_x_counter = 0;text_x_counter <= SCREEN_WIDTH;text_x_counter++)
+
+        for(uint64_t h_flush_sl = 0; h_flush_sl < MAX_HORIZONTAL_CHARS_1080p; h_flush_sl++)
         {
-            uint32_t letter = text_buffer[text_buffer_pixel_selector + text_x_counter];
-            if(letter != BLACK) 
-            {
-                text_framebuffer_buffer[text_x_counter + text_y_counter] =  letter;
+            letter selected_letter      = char_buffer[( offset_copy + v_buffer_flush_sl)*MAX_HORIZONTAL_CHARS_1080p + h_flush_sl];
+            letter * mask_letter_selector = &mask_buffer[h_flush_sl + v_flush_sl * MAX_HORIZONTAL_CHARS_1080p];
+
+            if(selected_letter.char_num != mask_letter_selector->char_num || selected_letter.char_colour != mask_letter_selector->char_colour){
+
+                color = selected_letter.char_colour;
+                putchar(selected_letter.char_num,h_flush_sl * 8, v_flush_sl * 16, framebuffer_base);
+                mask_letter_selector->char_num = selected_letter.char_num;
+                mask_letter_selector->char_colour = selected_letter.char_colour;
+                continue;
             }
+
         }
     }
-
 }
 
+//print does work as intended
 void    print         (char * text,...)
 {
     va_list       va;
@@ -81,53 +93,53 @@ void    print         (char * text,...)
     
     while(text[i])
     {  
-        if(x_counter >= 1916)
+        //Checking horizontal character limit to avoid overflow
+        if(x_counter >= MAX_HORIZONTAL_CHARS_1080p)
         {
-            CHECK_OFFSET        ;
-            y_counter   +=  16  ;
-            x_counter   =   0   ;
+            flush_text_buffer();
+            y_counter++     ;
+            x_counter = 0   ;
             if(offset_switch)
             {
-                offset     +=  16;
-                if(offset >= 1072)
-                {
-                    offset = 0;
-                }
-            CLEAR_LINE(text_line_above)
+                offset++;
+                CHECK_OFFSET;
+                CLEAR_BUFFER_LINE(offset,char_buffer)
             }
-            if(y_counter >= 1072)
-            {
-
-                if(!offset_switch){
-                    offset = 0;
-                    offset_switch = 1;
-                    y_counter = 1072;
-                    CLEAR_LINE(offset);
-                }
-                else{
-                    y_counter = 1056;
-                }
-                CLEAR_LINE(text_line_above);
-            }
-
         }
-        text_line =  (offset_switch)?((offset <= 0)?1056:offset-16):y_counter;
-        text_line_above =  (offset_switch)?((offset >= 1056)?0:offset+16):y_counter;
+        //Checking vertical character limit to avoid overflow
+        if(y_counter >= MAX_VERTICAL_CHARS_1080p)
+        {
+            flush_text_buffer();
+            // offset switch is checked to ensure that the terminal doesn't start scrolling before reaching the end at lest one time
+            if(!offset_switch){
+                offset = 0;
+                offset_switch = 1;
+                y_counter = MAX_VERTICAL_CHARS_1080p - 1;
+            }
+            else{
+                y_counter = MAX_VERTICAL_CHARS_1080p - 1;
+            }
+            CLEAR_BUFFER_LINE(offset,char_buffer);
+        }
+        
+        // this is only valid as long as mouse scrolling isn't enabled so it'll be likely changed in the future
+        text_line_to_write =  (offset_switch)?((offset <= 0)?MAX_VERTICAL_CHARS_1080p-1:(offset-1)):y_counter;
+
+
         if (text[i] != '%')
         {
-
-            
-            putchar (text[i++],x_counter,text_line,text_buffer);
-            x_counter+=8;
+            char_buffer[x_counter +(text_line_to_write) * MAX_HORIZONTAL_CHARS_1080p].char_num = text[i];
+            char_buffer[x_counter +(text_line_to_write) * MAX_HORIZONTAL_CHARS_1080p].char_colour = color;
+            i++;
+            x_counter++;
             continue;        
         }
         
         va_stubb = &va;
         func_list[text[++i]-97]();
-        ++i;
+        i++;
     }
-    copy_text_buffer();
-    copy_to_framebuffer();
+    flush_text_buffer();
     va_end(va);
     return;
 }
@@ -186,17 +198,18 @@ void invalid(void)
 void newline(void)
 {
     if(offset_switch){
-        CLEAR_LINE(text_line_above)
-        offset    +=  16;
+        CLEAR_BUFFER_LINE(offset,char_buffer)
+        offset    ++;
     }
     x_counter =   0;
-    y_counter +=  16;
+    y_counter +=  1;
+    CHECK_OFFSET;
     return;
     
 }
 void tab(void)
 {
-    x_counter+= 32;
+    x_counter+= 3;
     return;
 }
 

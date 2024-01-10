@@ -10,12 +10,14 @@
 
 #define SCREEN_HEIGHT   1080
 #define SCREEN_WIDTH    1920
-#define MAX_VERTICAL_CHARS_1080p    119
-#define MAX_HORIZONTAL_CHARS_1080p  134
+#define MAX_VERTICAL_CHARS_1080p    67
+#define MAX_HORIZONTAL_CHARS_1080p  238
+#define MAX_TOTAL_CHARS_1080p       (MAX_HORIZONTAL_CHARS_1080p * MAX_VERTICAL_CHARS_1080p)
 #define CHAR_HEIGHT                 16
 #define CHAR_WIDTH                  8
 #define TEXT_BUFFER_SIZE            2073600
 
+void        copy_to_framebuffer (void);
 void        putchar             (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_selector);
 void        copy_text_buffer    (void);
 void        print               (char * text,...);
@@ -59,8 +61,16 @@ static void (*func_list[])(void) =
     EMPTY,EMPTY
 };
 
-static uint32_t text_buffer[TEXT_BUFFER_SIZE];
-static uint32_t text_framebuffer_buffer[TEXT_BUFFER_SIZE];
+typedef struct{
+    uint16_t char_num;
+    uint32_t char_colour;
+}letter;
+
+extern letter mask_buffer[MAX_TOTAL_CHARS_1080p];
+extern letter char_buffer[MAX_TOTAL_CHARS_1080p];
+extern uint32_t save_buffer [TEXT_BUFFER_SIZE];
+extern uint32_t text_buffer [TEXT_BUFFER_SIZE];
+ 
 
 
 #endif
