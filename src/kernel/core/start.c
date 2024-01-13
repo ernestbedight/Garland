@@ -12,7 +12,7 @@ void _start(void) {
 
     screenInit  ();   //initialize screen's framebuffer 
     bg          (TERMINAL_BACKGROUND_COLOUR,framebuffer_base);   //set a default blue background
-    print       ("WELCOME TO UDMOS - Untethered Data Manager Operating System%n"); 
+    print       ("WELCOME TO GARLAND OPERATING SYSTEM!%n"); 
     dimension   (framebuffer_dimensions);
    
     print       ("resolution:      %dx%d %n",framebuffer_dimensions[2],framebuffer_dimensions[1]);

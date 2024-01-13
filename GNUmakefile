@@ -1,5 +1,5 @@
 
-#Untethered Data Manager Operating System
+#GARLAND OPERATING SYSTEM
 
 #INCLUDED ABSTRACTION
 all:clear clone_directories limine_header compile_kernel limine_build
@@ -22,7 +22,7 @@ specify_compiler_path
 
 #GENERAL SPECIFICATIONS
 
-IMAGE_NAME                      :=    udmos.iso
+IMAGE_NAME                      :=    garland.iso
 USB_MOUNT_POINT                 :=    /dev/sda
 BUILD_DIRECTORY                 :=    ./Build
 CROSS_COMPILER_DESTINATION      :=    ./cross-compiler
@@ -30,7 +30,7 @@ CROSS_COMPILER_DESTINATION      :=    ./cross-compiler
 
 #KERNEL SPECIFICATIONS
 
-KERNEL_NAME                     :=     udmos.elf
+KERNEL_NAME                     :=     garland.elf
 
 ifneq ($(wildcard ./cross-compiler/compiler/bin/x86_64-elf-gcc),)
 KERNEL_COMPILER                 :=     ./cross-compiler/compiler/bin/x86_64-elf-gcc
