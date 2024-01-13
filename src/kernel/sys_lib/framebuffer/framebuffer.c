@@ -1,16 +1,15 @@
 #include <framebuffer/framebuffer.h>
 
 
-uint32_t*                    framebuffer_base;
-struct limine_framebuffer*   framebuffer;
-uint8_t                      bytesPerPixel;
-uint16_t                     pitch;
+        uint32_t*             framebuffer_base;
+struct  limine_framebuffer*   framebuffer;
+        uint8_t               bytesPerPixel;
+        uint16_t              pitch;
 
 static volatile struct limine_framebuffer_request framebuffer_request = {
     .id = LIMINE_FRAMEBUFFER_REQUEST,
     .revision = 0
 };
-
 
 
 void screenInit(void) {
@@ -21,6 +20,9 @@ void screenInit(void) {
      || framebuffer_request.response->framebuffer_count < 1) {
         hcf();
     }
+    uint64_t pat = (uint64_t)0x060500070406;
+    wrmsr(0x277, pat);
+
 
     framebuffer      = framebuffer_request.response->framebuffers[0];
     framebuffer_base = framebuffer->address;

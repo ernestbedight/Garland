@@ -4,9 +4,9 @@
 #include "values/colours.h"
 #include <limine.h>
 #include <stdint.h>
-#include <common.h>
+#include <attributes/attributes.h>
+#include <math/math_functions.h>
 #include <terminal/terminal.h>
-#include <math_functions.h>
 
 
 extern          uint32_t*               framebuffer_base;
@@ -25,6 +25,6 @@ void draw_rectangle         (uint64_t x, uint64_t y, uint32_t width, uint32_t he
 void screenInit             (void);
 void bg                     (uint32_t colour, uint32_t * buffer);
 void draw_line              ( int x1, int y1, int x2, int y2, uint32_t colour);
-void draw_coord_deprecated  (uint64_t x, uint64_t y, uint32_t colour);
+void _draw_coord_deprecated  (uint64_t x, uint64_t y, uint32_t colour);
 
 #endif

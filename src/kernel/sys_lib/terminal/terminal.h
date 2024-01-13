@@ -3,15 +3,14 @@
 
 #include <framebuffer/framebuffer.h>
 #include "fonts/IBM_8x16_font.h"
-#include "fonts/u8g2_4x6_font.h"
 #include <stdarg.h>
-#include <string_functions.h>
+#include <strings/string_functions.h>
 #include <framebuffer/framebuffer.h>
 
 #define SCREEN_HEIGHT   1080
 #define SCREEN_WIDTH    1920
 #define MAX_VERTICAL_CHARS_1080p    67
-#define MAX_HORIZONTAL_CHARS_1080p  238
+#define MAX_HORIZONTAL_CHARS_1080p  239
 #define MAX_TOTAL_CHARS_1080p       (MAX_HORIZONTAL_CHARS_1080p * MAX_VERTICAL_CHARS_1080p)
 #define CHAR_HEIGHT                 16
 #define CHAR_WIDTH                  8
@@ -24,53 +23,14 @@ void        print               (char * text,...);
 void        print_num           (int64_t num);
 void        flag                (int64_t num);
 void        change_color        (uint32_t colour);
-void        print_stubb         (void);
-void        print_num_stub      (void);
-void        change_color_stubb  (void);
-void        invalid             (void);
-void        newline             (void);
-void        tab                 (void);
-void        print_hex_stubb     (void);
-void        define_x            (void);
+
 uint64_t    return_x_counter    (void);
 uint64_t    return_y_counter    (void);
 
-#define STRNG print_stubb
-#define NUMBR print_num_stub
-#define COLOR change_color_stubb
-#define EMPTY invalid
-#define NEWLN newline
-#define TABSP tab
-#define HEXNM print_hex_stubb
-#define DEFNX define_x
-
-static void (*func_list[])(void) =
-{
-    EMPTY,EMPTY,
-    COLOR,NUMBR,
-    EMPTY,EMPTY,
-    EMPTY,HEXNM,
-    EMPTY,EMPTY,
-    EMPTY,EMPTY,
-    EMPTY,NEWLN,
-    EMPTY,EMPTY,
-    EMPTY,EMPTY,
-    STRNG,TABSP,
-    EMPTY,EMPTY,
-    EMPTY,DEFNX,
-    EMPTY,EMPTY
-};
 
 typedef struct{
     uint16_t char_num;
     uint32_t char_colour;
 }letter;
-
-extern letter mask_buffer[MAX_TOTAL_CHARS_1080p];
-extern letter char_buffer[MAX_TOTAL_CHARS_1080p];
-extern uint32_t save_buffer [TEXT_BUFFER_SIZE];
-extern uint32_t text_buffer [TEXT_BUFFER_SIZE];
- 
-
 
 #endif

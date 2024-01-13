@@ -1,4 +1,4 @@
-#include "global_include.h"
+#include "kernel_include.h"
 
 
 /*void print_memory_layout(void)
@@ -22,7 +22,7 @@
 }
 */
 
-#define RGB_DRAW    draw_coord(x,y,rgb,text_buffer);            \
+#define RGB_DRAW    draw_coord(x,y,rgb,framebuffer_base);            \
                     x++;                            \
                     if(x > 1919){x = 0;y++;}        \
                     if(y > 1079){y = 0;}

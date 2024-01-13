@@ -1,6 +1,6 @@
 #This file setups the IDT (interrupt descriptor table) in the first 31 interrupts
 
-.include "common_assembly.S"
+.include "asm/common_assembly.S"
 
 .section .text
 .extern print

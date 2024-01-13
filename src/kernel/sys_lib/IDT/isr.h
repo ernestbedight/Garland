@@ -1,7 +1,7 @@
 #ifndef ISR_H
 #define ISR_H
 
-#include <common.h>
+#include <attributes/attributes.h>
 #include <terminal/terminal.h>
 #include <framebuffer/framebuffer.h>
 NORETURN void exception_handler(uint8_t num, uint64_t address);

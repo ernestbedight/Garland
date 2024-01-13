@@ -16,7 +16,7 @@ write                       \
 limine_build                \
 limine_download             \
 limine_header               \
-
+specify_compiler_path       
 
 
 
@@ -149,7 +149,7 @@ write:
 #LIMINE SETUP
 
 LIMINE_CONFIGURATION_FILE     := ./src/kernel/limine_configuration/limine.cfg
-LIMINE_DIRECTORY              := ./limine
+LIMINE_DIRECTORY              := ./packages/limine
 
 limine: limine_download
 
@@ -181,7 +181,7 @@ limine_build:
 
 limine_download:
 	@echo -e "\n=>\e[0;31mDOWNLOADING LIMINE...\e[0m"
-	rm -rf ./limine
+	rm -rf $(LIMINE_DIRECTORY)
 	git clone https://github.com/limine-bootloader/limine.git $(LIMINE_DIRECTORY) --branch=v4.x-branch-binary --depth=1 && make -C $(LIMINE_DIRECTORY)
 
 limine_header:
@@ -194,8 +194,6 @@ build_cross_compiler:build_cross_compiler_stubb
 
 #INCLUDING RULES
 include ./src/kernel/GNUmakefile
-include ./cross-compiler/GNUmakefile
-
 
 #STUBB FOR FUTURE FEATURES
 
@@ -209,3 +207,6 @@ clone_directories:
 	@rsync -av -f"+ */" -f"- *" "./src" "$(BUILD_DIRECTORY)"
 	@mkdir -p $(BUILD_DIRECTORY)/limine_header
 
+#SPECIFY CROSS COMPILER PATH
+
+        

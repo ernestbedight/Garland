@@ -5,9 +5,7 @@
 #include <framebuffer/framebuffer.h>
 #include <terminal/terminal.h>
 #include <IDT/idt.h>
-#include <common.h>
 #include <memory/memory.h>
-#include <math_functions.h>
 
 void print_memory_layout(void);
 void rgb_line(uint64_t x, uint64_t y, uint32_t height);

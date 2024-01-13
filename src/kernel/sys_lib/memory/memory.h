@@ -21,7 +21,6 @@ uint64_t    calculate_usable_memory(void);
 uint64_t    calculate_pages(uint64_t usable_memory);
 
 
-
 static char * mem_types[8]=
 {
     "USABLE",

@@ -1,6 +1,6 @@
 #This files setups the FPU (not usable in the main kernel)
 
-.include "common_assembly.S"
+.include "asm/common_assembly.S"
 #include <framebuffer/values/colours.h>
 
 /*

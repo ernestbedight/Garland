@@ -2,19 +2,54 @@
 
 #include <terminal/terminal.h>
 
-static  uint64_t  x_counter             = 0;
-static  uint64_t  y_counter             = 0;
-static  uint32_t  color                 = TERMINAL_FOREGROUND_COLOUR;
-        va_list * va_stubb;
-static  uint64_t  text_buffer_position  = 0;  
-static  uint64_t  offset                = 0;
-static  uint8_t   offset_switch         = 0;
-static  uint64_t  text_line_to_write    = 0;
-        uint32_t text_buffer[TEXT_BUFFER_SIZE];
-        uint32_t save_buffer [TEXT_BUFFER_SIZE];
-        letter mask_buffer[MAX_TOTAL_CHARS_1080p];
-        letter char_buffer[MAX_TOTAL_CHARS_1080p];
+uint64_t    x_counter             = 0;
+uint64_t    y_counter             = 0;
+uint32_t    color                 = TERMINAL_FOREGROUND_COLOUR;
+va_list *   va_stubb;
+uint64_t    text_buffer_position  = 0;  
+uint64_t    offset                = 0;
+uint8_t     offset_switch         = 0;
+uint64_t    text_line_to_write    = 0;
+uint32_t    text_buffer[TEXT_BUFFER_SIZE];
+uint32_t    save_buffer [TEXT_BUFFER_SIZE];
+letter      mask_buffer[MAX_TOTAL_CHARS_1080p];
+letter      char_buffer[MAX_TOTAL_CHARS_1080p];
 
+
+void _terminal_print(void);
+void _terminal_print_num(void);
+void _terminal_change_color(void);
+void _terminal_invalid(void);
+void _terminal_newline(void);
+void _terminal_tab(void);
+void _terminal_print_hex(void);
+void _terminal_define_x(void);
+
+#define STRNG _terminal_print
+#define NUMBR _terminal_print_num
+#define COLOR _terminal_change_color
+#define EMPTY _terminal_invalid
+#define NEWLN _terminal_newline
+#define TABSP _terminal_tab
+#define HEXNM _terminal_print_hex
+#define DEFNX _terminal_define_x
+
+static void (*func_list[])(void) =
+{
+    EMPTY,EMPTY,
+    COLOR,NUMBR,
+    EMPTY,EMPTY,
+    EMPTY,HEXNM,
+    EMPTY,EMPTY,
+    EMPTY,EMPTY,
+    EMPTY,NEWLN,
+    EMPTY,EMPTY,
+    EMPTY,EMPTY,
+    STRNG,TABSP,
+    EMPTY,EMPTY,
+    EMPTY,DEFNX,
+    EMPTY,EMPTY
+};
 
 #define CHECK_OFFSET                           if(offset >= MAX_VERTICAL_CHARS_1080p) offset = 0;
 #define CLEAR_BUFFER_LINE(line, buffer)        for(uint64_t x_black = 0; x_black < MAX_HORIZONTAL_CHARS_1080p; x_black++){buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_num = NULL;buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_colour = color;}    
@@ -31,7 +66,10 @@ void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_s
     {
         for(cx=0;   cx<CHAR_WIDTH;   cx++)
         {
-            if(glyph[cy]&mask[cx]){draw_coord(x+cx,y+cy,color,framebuffer_selector);continue;}else{
+            if(glyph[cy]&mask[cx]){
+                draw_coord(x+cx,y+cy,color,framebuffer_selector);
+            }
+            else{
                 draw_coord(x+cx,y+cy,TERMINAL_BACKGROUND_COLOUR,framebuffer_selector);
             }
         }
@@ -96,7 +134,6 @@ void    print         (char * text,...)
         //Checking horizontal character limit to avoid overflow
         if(x_counter >= MAX_HORIZONTAL_CHARS_1080p)
         {
-            flush_text_buffer();
             y_counter++     ;
             x_counter = 0   ;
             if(offset_switch)
@@ -109,7 +146,6 @@ void    print         (char * text,...)
         //Checking vertical character limit to avoid overflow
         if(y_counter >= MAX_VERTICAL_CHARS_1080p)
         {
-            flush_text_buffer();
             // offset switch is checked to ensure that the terminal doesn't start scrolling before reaching the end at lest one time
             if(!offset_switch){
                 offset = 0;
@@ -151,7 +187,6 @@ void    print_num     (int64_t num)
     return; 
 }
 
-
 void change_color(uint32_t colour)
 {
     color = colour;
@@ -160,7 +195,7 @@ void change_color(uint32_t colour)
 
 //FUNCTION WRAPS
 
-void    print_stubb   (void)
+void _terminal_print(void)
 {
     char * text = va_arg(*va_stubb, void*);
     print(text);
@@ -168,13 +203,13 @@ void    print_stubb   (void)
 }
 
 
-void change_color_stubb(void)
+void _terminal_change_color(void)
 {
     color = va_arg(*va_stubb, void*);
     return;
 }
 
-void    print_num_stub(void)
+void _terminal_print_num(void)
 {
    
     int64_t num     = va_arg(*va_stubb, void*);
@@ -183,7 +218,7 @@ void    print_num_stub(void)
     return; 
 }
 
-void    print_hex_stubb     (void)
+void _terminal_print_hex(void)
 {
     int64_t num     = va_arg(*va_stubb, void*);
     char *  number = hex_to_string(num);
@@ -191,11 +226,11 @@ void    print_hex_stubb     (void)
     return; 
 }
 
-void invalid(void)
+void _terminal_invalid(void)
 {
     return;
 }
-void newline(void)
+void _terminal_newline(void)
 {
     if(offset_switch){
         CLEAR_BUFFER_LINE(offset,char_buffer)
@@ -207,21 +242,14 @@ void newline(void)
     return;
     
 }
-void tab(void)
+void _terminal_tab(void)
 {
     x_counter+= 3;
     return;
 }
 
-void flag (int64_t num)
-{
-    print       ("FLAG ");
-    print_num   (num);
-    print       ("%n");
-    return;
-}
 
-void    define_x            (void)
+void  _terminal_define_x            (void)
 {
     x_counter   = va_arg(*va_stubb, void*);
 }
@@ -234,4 +262,12 @@ uint64_t return_x_counter(void)
 uint64_t return_y_counter(void)
 {
     return y_counter;
+}
+
+void flag (int64_t num)
+{
+    print       ("FLAG ");
+    print_num   (num);
+    print       ("%n");
+    return;
 }
