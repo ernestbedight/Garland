@@ -17,7 +17,7 @@
 #define TEXT_BUFFER_SIZE            2073600
 
 void        copy_to_framebuffer (void);
-void        putchar             (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_selector);
+void        putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t fg,uint32_t * framebuffer_selector);
 void        copy_text_buffer    (void);
 void        print               (char * text,...);
 void        print_num           (int64_t num);

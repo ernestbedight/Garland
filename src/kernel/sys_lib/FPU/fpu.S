@@ -9,8 +9,9 @@ value_37E  0x37E
 */
 
 .extern print
+.global FPU_init
 
-.section .text
+.section .data
 
 value_37A:
     .long 0x37A
@@ -20,7 +21,9 @@ FPU_success_message:
 FPU_error_message:
     .asciz "%cFPU not present on the designed system %c%n"
 
-.global FPU_init
+.section .text
+
+
 
 FPU_init:
 

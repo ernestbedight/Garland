@@ -54,7 +54,7 @@ static void (*func_list[])(void) =
 #define CHECK_OFFSET                           if(offset >= MAX_VERTICAL_CHARS_1080p) offset = 0;
 #define CLEAR_BUFFER_LINE(line, buffer)        for(uint64_t x_black = 0; x_black < MAX_HORIZONTAL_CHARS_1080p; x_black++){buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_num = NULL;buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_colour = color;}    
 
-void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_selector)
+void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t fg,uint32_t * framebuffer_selector)
 {
 
     uint8_t     cx      =0,
@@ -67,7 +67,7 @@ void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t * framebuffer_s
         for(cx=0;   cx<CHAR_WIDTH;   cx++)
         {
             if(glyph[cy]&mask[cx]){
-                draw_coord(x+cx,y+cy,color,framebuffer_selector);
+                draw_coord(x+cx,y+cy,fg,framebuffer_selector);
             }
             else{
                 draw_coord(x+cx,y+cy,TERMINAL_BACKGROUND_COLOUR,framebuffer_selector);
@@ -110,8 +110,7 @@ void flush_text_buffer(void)
 
             if(selected_letter.char_num != mask_letter_selector->char_num || selected_letter.char_colour != mask_letter_selector->char_colour){
 
-                color = selected_letter.char_colour;
-                putchar(selected_letter.char_num,h_flush_sl * 8, v_flush_sl * 16, framebuffer_base);
+                putchar(selected_letter.char_num,h_flush_sl * 8, v_flush_sl * 16,selected_letter.char_colour, framebuffer_base);
                 mask_letter_selector->char_num = selected_letter.char_num;
                 mask_letter_selector->char_colour = selected_letter.char_colour;
                 continue;

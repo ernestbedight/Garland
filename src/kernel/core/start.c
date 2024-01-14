@@ -38,4 +38,6 @@ void _start(void) {
     print("memory size:%x%sGiB%n",20,placepoint(memory_size, memory_size_digits));
     print("usable memory:%x%sGiB%n",20,placepoint(usable_memory_size, usable_memory_size_digits));
     hcf();
+    print("%c,%c",YELLOW,RED);
+    hcf();
 }
