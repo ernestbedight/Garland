@@ -2,20 +2,6 @@
 
 #include <terminal/terminal.h>
 
-uint64_t    x_counter             = 0;
-uint64_t    y_counter             = 0;
-uint32_t    color                 = TERMINAL_FOREGROUND_COLOUR;
-va_list *   va_stubb;
-uint64_t    text_buffer_position  = 0;  
-uint64_t    offset                = 0;
-uint8_t     offset_switch         = 0;
-uint64_t    text_line_to_write    = 0;
-uint32_t    text_buffer[TEXT_BUFFER_SIZE];
-uint32_t    save_buffer [TEXT_BUFFER_SIZE];
-letter      mask_buffer[MAX_TOTAL_CHARS_1080p];
-letter      char_buffer[MAX_TOTAL_CHARS_1080p];
-
-
 void _terminal_print(void);
 void _terminal_print_num(void);
 void _terminal_change_color(void);
@@ -34,6 +20,8 @@ void _terminal_define_x(void);
 #define HEXNM _terminal_print_hex
 #define DEFNX _terminal_define_x
 
+#define CHECK_OFFSET                            if(offset >= MAX_VERTICAL_CHARS_1080p) offset = 0;
+
 static void (*func_list[])(void) =
 {
     EMPTY,EMPTY,
@@ -51,8 +39,33 @@ static void (*func_list[])(void) =
     EMPTY,EMPTY
 };
 
-#define CHECK_OFFSET                           if(offset >= MAX_VERTICAL_CHARS_1080p) offset = 0;
-#define CLEAR_BUFFER_LINE(line, buffer)        for(uint64_t x_black = 0; x_black < MAX_HORIZONTAL_CHARS_1080p; x_black++){buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_num = NULL;buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_colour = color;}    
+typedef struct{
+    uint16_t char_num;
+    uint32_t char_colour;
+}letter;
+
+
+uint64_t    x_counter             = 0;
+uint64_t    y_counter             = 0;
+uint32_t    color                 = TERMINAL_FOREGROUND_COLOUR;
+va_list *   va_stubb;
+uint64_t    text_buffer_position  = 0;  
+uint64_t    offset                = 0;
+uint8_t     offset_switch         = 0;
+uint64_t    text_line_to_write    = 0;
+uint32_t    text_buffer[TEXT_BUFFER_SIZE];
+uint32_t    save_buffer [TEXT_BUFFER_SIZE];
+letter      mask_buffer[MAX_TOTAL_CHARS_1080p];
+letter      char_buffer[MAX_TOTAL_CHARS_1080p];
+
+
+
+void clear_buffer_line(uint64_t line, letter * buffer){
+    for(uint64_t x_black = 0; x_black < MAX_HORIZONTAL_CHARS_1080p; x_black++){
+        buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_num = NULL;         
+        buffer[(line)*MAX_HORIZONTAL_CHARS_1080p+x_black].char_colour = color;      
+    }  
+}
 
 void  putchar (unsigned char c, uint64_t x, uint64_t y, uint32_t fg,uint32_t * framebuffer_selector)
 {
@@ -139,7 +152,7 @@ void    print         (char * text,...)
             {
                 offset++;
                 CHECK_OFFSET;
-                CLEAR_BUFFER_LINE(offset,char_buffer)
+                clear_buffer_line(offset,char_buffer);
             }
         }
         //Checking vertical character limit to avoid overflow
@@ -154,7 +167,7 @@ void    print         (char * text,...)
             else{
                 y_counter = MAX_VERTICAL_CHARS_1080p - 1;
             }
-            CLEAR_BUFFER_LINE(offset,char_buffer);
+            clear_buffer_line(offset,char_buffer);
         }
         
         // this is only valid as long as mouse scrolling isn't enabled so it'll be likely changed in the future
@@ -232,7 +245,7 @@ void _terminal_invalid(void)
 void _terminal_newline(void)
 {
     if(offset_switch){
-        CLEAR_BUFFER_LINE(offset,char_buffer)
+        clear_buffer_line(offset,char_buffer);
         offset    ++;
     }
     x_counter =   0;

@@ -7,8 +7,8 @@
 #include <strings/string_functions.h>
 #include <framebuffer/framebuffer.h>
 
-#define SCREEN_HEIGHT   1080
-#define SCREEN_WIDTH    1920
+#define SCREEN_HEIGHT               1080
+#define SCREEN_WIDTH                1920
 #define MAX_VERTICAL_CHARS_1080p    67
 #define MAX_HORIZONTAL_CHARS_1080p  239
 #define MAX_TOTAL_CHARS_1080p       (MAX_HORIZONTAL_CHARS_1080p * MAX_VERTICAL_CHARS_1080p)
@@ -27,10 +27,5 @@ void        change_color        (uint32_t colour);
 uint64_t    return_x_counter    (void);
 uint64_t    return_y_counter    (void);
 
-
-typedef struct{
-    uint16_t char_num;
-    uint32_t char_colour;
-}letter;
 
 #endif
