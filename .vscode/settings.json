@@ -22,6 +22,10 @@
         "global_include.h": "c",
         "source_location": "c",
         "terminal.h": "c",
-        "math_functions.h": "c"
+        "math_functions.h": "c",
+        "string_view": "c",
+        "any": "c",
+        "complex": "c",
+        "variant": "c"
     }
 }

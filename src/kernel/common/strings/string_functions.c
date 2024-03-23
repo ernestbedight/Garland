@@ -11,7 +11,7 @@ uint32_t strlen(const char *str) {
 	return i;
 }
 
-char* uint64_to_string( uint64_t input )
+char* ulltoa_d( uint64_t input )
 {
    static char  text[20];   
                 text[20]     ='\0';
@@ -31,7 +31,7 @@ char* uint64_to_string( uint64_t input )
    return &text[loc];
 }
 
-char* hex_to_string( uint64_t input )
+char* ulltoa_h( uint64_t input )
 {
    static char  text[20];
                 text[20] ='\0';
@@ -54,7 +54,7 @@ char* hex_to_string( uint64_t input )
 char* placepoint(uint64_t num, uint8_t offset)
 {
     static char string[20];
-    char * string_stubb = uint64_to_string(num);
+    char * string_stubb = ulltoa_d(num);
                 
 
     for(uint8_t i = 20; i > offset ; i--)

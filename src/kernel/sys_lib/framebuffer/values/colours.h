@@ -25,6 +25,17 @@
     #define YELLOW   0xFFFF00
 #endif
 
+#ifndef ORANGE
+    #define ORANGE   0xFFA500
+#endif
+
+#ifndef PINK
+    #define PINK     0xFFC0CB
+#endif
+
+#ifndef MAGENTA
+    #define MAGENTA  0xFF00FF
+#endif
 
 #ifndef TERMINAL_FOREGROUND_COLOUR
     #define TERMINAL_FOREGROUND_COLOUR WHITE

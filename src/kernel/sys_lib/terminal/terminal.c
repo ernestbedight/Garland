@@ -2,14 +2,14 @@
 
 #include <terminal/terminal.h>
 
-void _terminal_print(void);
-void _terminal_print_num(void);
-void _terminal_change_color(void);
-void _terminal_invalid(void);
-void _terminal_newline(void);
-void _terminal_tab(void);
-void _terminal_print_hex(void);
-void _terminal_define_x(void);
+static void _terminal_print(void);
+static void _terminal_print_num(void);
+static void _terminal_change_color(void);
+static void _terminal_invalid(void);
+static void _terminal_newline(void);
+static void _terminal_tab(void);
+static void _terminal_print_hex(void);
+static void _terminal_define_x(void);
 
 #define STRNG _terminal_print
 #define NUMBR _terminal_print_num
@@ -194,7 +194,7 @@ void    print         (char * text,...)
 void    print_num     (int64_t num)
 {
     char *  number;
-            number = uint64_to_string(num);
+            number = ulltoa_d(num);
     print(number);
     return; 
 }
@@ -205,9 +205,7 @@ void change_color(uint32_t colour)
     return;
 }
 
-//FUNCTION WRAPS
-
-void _terminal_print(void)
+static void _terminal_print(void)
 {
     char * text = va_arg(*va_stubb, void*);
     print(text);
@@ -215,34 +213,35 @@ void _terminal_print(void)
 }
 
 
-void _terminal_change_color(void)
+static void _terminal_change_color(void)
 {
     color = va_arg(*va_stubb, void*);
     return;
 }
 
-void _terminal_print_num(void)
+static void _terminal_print_num(void)
 {
    
     int64_t num     = va_arg(*va_stubb, void*);
-    char *  number  = uint64_to_string(num);
+    char *  number  = ulltoa_d(num);
     print(number);
     return; 
 }
 
-void _terminal_print_hex(void)
+static void _terminal_print_hex(void)
 {
     int64_t num     = va_arg(*va_stubb, void*);
-    char *  number = hex_to_string(num);
+    char *  number  = ulltoa_h(num);
     print(number);
     return; 
 }
 
-void _terminal_invalid(void)
+static void _terminal_invalid(void)
 {
     return;
 }
-void _terminal_newline(void)
+
+static void _terminal_newline(void)
 {
     if(offset_switch){
         clear_buffer_line(offset,char_buffer);
@@ -254,14 +253,14 @@ void _terminal_newline(void)
     return;
     
 }
-void _terminal_tab(void)
+
+static void _terminal_tab(void)
 {
     x_counter+= 3;
     return;
 }
 
-
-void  _terminal_define_x            (void)
+static void  _terminal_define_x            (void)
 {
     x_counter   = va_arg(*va_stubb, void*);
 }

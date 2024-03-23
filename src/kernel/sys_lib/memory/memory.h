@@ -3,7 +3,10 @@
 
 #include <limine.h>
 #include <stdint.h>
+#include <terminal/terminal.h>
+#include <types/bool.h>
 
+#define PAGE_SIZE   0x1000
 #define BYTE_GIB_RATIO 1073741824
 
 #define USABLE_MEMORY_CONDITIONS(entry_type)    entry_type != LIMINE_MEMMAP_RESERVED            &&  \
@@ -18,7 +21,12 @@ extern volatile struct  limine_memmap_request   memmap_req;
 
 uint64_t    calculate_memory_size(void);
 uint64_t    calculate_usable_memory(void);
-uint64_t    calculate_pages(uint64_t usable_memory);
+
+void        initialize_allocator();
+uint64_t    request_page(uint8_t order);
+uint8_t     free_page(uint64_t address);
+
+
 
 
 static char * mem_types[8]=
@@ -32,6 +40,11 @@ static char * mem_types[8]=
     "KERNEL_AND_MODULES",
     "FRAMEBUFFER"
 };
+
+
+#define WRITE(var, val)    (*((volatile typeof(val) *)(&(var))) = (val))
+
+#define READ(var)          (*((volatile typeof(var) *)(&(var))))
 
 
 #endif

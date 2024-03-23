@@ -3,3 +3,5 @@ Build
 cross-compiler/compiler
 cross-compiler/gcc
 cross-compiler/binutils
+.vscode
+packages/limine

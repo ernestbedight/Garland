@@ -28,16 +28,4 @@ uint64_t calculate_usable_memory(void)
     return size;
 }
 
-uint64_t calculate_pages(uint64_t usable_memory)
-{
-    uint64_t size = 0;
-    for(uint8_t entry_number = 0; entry_number < memmap_req.response->entry_count; entry_number++)
-    {
-        uint64_t entry_type = memmap_req.response->entries[entry_number]->type;
-        if(USABLE_MEMORY_CONDITIONS(entry_type))
-        {
-            size+= memmap_req.response->entries[entry_number]->length;
-        }
-    }
-    return size;
-}
+
